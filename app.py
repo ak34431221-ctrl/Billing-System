@@ -1,3 +1,4 @@
+import math
 import streamlit as st
 from datetime import date
 
@@ -18,12 +19,21 @@ st.markdown(
     .row b {color: #1f2937; font-weight: 500;}
     .opt-title {font-size: 13px; color: #9ca3af; margin-bottom: 4px;}
     .total {font-size: 26px; font-weight: 600; color: #1f2937;}
+    .pair {display: flex; justify-content: space-between; gap: 12px;}
+    .pair > div {flex: 1;}
+    .sub {font-size: 12px; color: #9ca3af;}
+    .round {font-size: 26px; font-weight: 600; color: #4f7cff;}
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 ONU_DEPOSIT = 500
+
+
+def round_up_5(x):
+    n = math.floor(x + 0.5)
+    return math.ceil(n / 5) * 5
 MONTH_DAYS = 31
 
 st.markdown("### Billing")
@@ -45,6 +55,8 @@ if st.button("Calculate", use_container_width=True):
         running_month = running_days * (package / MONTH_DAYS)
         option1 = running_month + ONU_DEPOSIT
         option2 = running_month + package + ONU_DEPOSIT
+        round1 = round_up_5(option1)
+        round2 = round_up_5(option2)
 
         st.markdown(
             f"""
@@ -56,11 +68,17 @@ if st.button("Calculate", use_container_width=True):
             </div>
             <div class="card">
               <div class="opt-title">Option 1 · Running + ONU</div>
-              <div class="total">{option1:.0f} Tk</div>
+              <div class="pair">
+                <div><div class="sub">Total</div><div class="total">{option1:.0f} Tk</div></div>
+                <div><div class="sub">Round figure</div><div class="round">{round1} Tk</div></div>
+              </div>
             </div>
             <div class="card">
               <div class="opt-title">Option 2 · Running + 1 month advance + ONU</div>
-              <div class="total">{option2:.0f} Tk</div>
+              <div class="pair">
+                <div><div class="sub">Total</div><div class="total">{option2:.0f} Tk</div></div>
+                <div><div class="sub">Round figure</div><div class="round">{round2} Tk</div></div>
+              </div>
               <div class="row">Advance<b>{package} Tk</b></div>
             </div>
             """,
