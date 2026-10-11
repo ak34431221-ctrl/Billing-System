@@ -24,6 +24,7 @@ st.markdown(
 )
 
 ONU_DEPOSIT = 500
+MONTH_DAYS = 31
 
 st.markdown("### Billing")
 
@@ -40,8 +41,8 @@ if st.button("Calculate", use_container_width=True):
     if package <= 0:
         st.warning("Package amount likho.")
     else:
-        running_days = max(0, 30 - connection_date.day + 1)
-        running_month = running_days * (package / 30)
+        running_days = max(0, MONTH_DAYS - connection_date.day + 1)
+        running_month = running_days * (package / MONTH_DAYS)
         option1 = running_month + ONU_DEPOSIT
         option2 = running_month + package + ONU_DEPOSIT
 
