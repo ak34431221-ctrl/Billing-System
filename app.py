@@ -17,6 +17,7 @@ st.markdown(
     .row {display: flex; justify-content: space-between; padding: 5px 0;
           font-size: 15px; color: #6b7280;}
     .row b {color: #1f2937; font-weight: 500;}
+    .row b.blue {color: #4f7cff; font-weight: 600;}
     .opt-title {font-size: 13px; color: #9ca3af; margin-bottom: 4px;}
     .total {font-size: 26px; font-weight: 600; color: #1f2937;}
     .pair {display: flex; justify-content: space-between; gap: 12px;}
@@ -55,6 +56,7 @@ if st.button("Calculate", use_container_width=True):
         running_month = running_days * (package / MONTH_DAYS)
         option1 = running_month + ONU_DEPOSIT
         option2 = running_month + package + ONU_DEPOSIT
+        round_running = round_up_5(running_month)
         round1 = round_up_5(option1)
         round2 = round_up_5(option2)
 
@@ -64,6 +66,7 @@ if st.button("Calculate", use_container_width=True):
               <div class="row">Connection date<b>{connection_date.strftime('%d-%m-%Y')}</b></div>
               <div class="row">Running days<b>{running_days} days</b></div>
               <div class="row">Running month<b>{running_month:.0f} Tk</b></div>
+              <div class="row">Running month (round figure)<b class="blue">{round_running} Tk</b></div>
               <div class="row">ONU deposit<b>{ONU_DEPOSIT} Tk</b></div>
             </div>
             <div class="card">
