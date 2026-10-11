@@ -1,6 +1,6 @@
 import math
 import streamlit as st
-from datetime import date
+from datetime import date, datetime
 
 st.set_page_config(page_title="Billing", page_icon="🧾", layout="centered")
 
@@ -39,17 +39,46 @@ MONTH_DAYS = 31
 
 st.markdown("### Billing")
 
-connection_date = st.date_input(
-    "Connection date",
-    value=date.today(),
-    min_value=date(2020, 1, 1),
-    max_value=date(2035, 12, 31),
-    format="DD-MM-YYYY",
+try:
+    from zoneinfo import ZoneInfo
+    today = datetime.now(ZoneInfo("Asia/Dhaka")).date()
+except Exception:
+    today = date.today()
+
+MONTHS = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
+]
+YEARS = list(range(2020, 2036))
+
+st.markdown("Connection date")
+c_day, c_month, c_year = st.columns([1, 2, 1.3])
+sel_day = c_day.selectbox(
+    "Date", list(range(1, 32)), index=today.day - 1
 )
+sel_month = c_month.selectbox(
+    "Month",
+    list(range(1, 13)),
+    index=today.month - 1,
+    format_func=lambda m: f"{m} - {MONTHS[m - 1]}",
+)
+sel_year = c_year.selectbox(
+    "Year",
+    YEARS,
+    index=YEARS.index(today.year) if today.year in YEARS else 0,
+)
+
 package = st.number_input("Package (Tk)", min_value=0, value=0, step=50)
 
 if st.button("Calculate", use_container_width=True):
-    if package <= 0:
+    try:
+        connection_date = date(sel_year, sel_month, sel_day)
+    except ValueError:
+        connection_date = None
+
+    if connection_date is None:
+        st.error("Ei date ta nai. Date ba month thik kore baachho.")
+    elif package <= 0:
         st.warning("Package amount likho.")
     else:
         running_days = max(0, MONTH_DAYS - connection_date.day + 1)
